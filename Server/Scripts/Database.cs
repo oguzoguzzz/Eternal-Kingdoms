@@ -155,6 +155,11 @@ namespace DevelopersHub.RealtimeNetworking.Server
             });
             return await task;
         }
+
+        public async static void PlaceBuilding(int id, string device, int buildingID)
+        {
+
+        }
         #endregion
     }
 }

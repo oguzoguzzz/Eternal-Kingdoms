@@ -9,7 +9,7 @@ namespace DevelopersHub.RealtimeNetworking
     {
         public enum RequestID
         {
-            AUTH = 1, SYNC = 2
+            AUTH = 1, SYNC = 2, BUILD = 3
         }
         private void Start()
         {

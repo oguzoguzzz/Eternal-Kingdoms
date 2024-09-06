@@ -16,7 +16,8 @@ namespace DevelopersHub.RealtimeNetworking
         [SerializeField] public TextMeshProUGUI _gemsText = null;
         [SerializeField] private Button _shopButton = null;
 
-        [SerializeField] private Building[] _buildingPrefabs = null;
+        [SerializeField] public BuildGrid _grid = null;
+        [SerializeField] public Building[] _buildingPrefabs = null;
 
 
         private static UI_Main _instance = null; public static UI_Main instance { get { return _instance;}}

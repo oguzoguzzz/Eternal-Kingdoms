@@ -31,7 +31,15 @@ namespace DevelopersHub.RealtimeNetworking.Server
         #region Data
         public static void ReceivedPacket(int clientID, Packet packet)
         {
-
+            int id = packet.ReadInt();
+            switch (id) 
+            {
+                case 3:
+                    string device = packet.ReadString();
+                    int building = packet.ReadInt();
+                    Database.PlaceBuilding(clientID, device, building);
+                    break;
+            }
         }
 
         public static void ReceivedBytes(int clientID, int packetID, byte[] data)
@@ -54,7 +62,6 @@ namespace DevelopersHub.RealtimeNetworking.Server
 
         public static void ReceivedInteger(int clientID, int packetID, int data)
         {
-            
         }
 
         public static void ReceivedFloat(int clientID, int packetID, float data)

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 5bf2800ed06596544aa285e6453434ae
+guid: 989996d09dc54de4b81a9cdc79f93347
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -43,7 +43,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -108,106 +108,18 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
-    sprites:
-    - serializedVersion: 2
-      name: completed_collections_overlay_1px.unit-info-popup_0
-      rect:
-        serializedVersion: 2
-        x: 476
-        y: 463
-        width: 32
-        height: 36
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4c6c00201d016904fb6542d4b0df1ef6
-      internalID: -2043256499
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: completed_collections_overlay_1px.unit-info-popup_1
-      rect:
-        serializedVersion: 2
-        x: 21
-        y: 359
-        width: 477
-        height: 281
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 3d212a01302e7d044a54234010c047ca
-      internalID: 191485441
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: completed_collections_overlay_1px.unit-info-popup_2
-      rect:
-        serializedVersion: 2
-        x: 519
-        y: 527
-        width: 479
-        height: 132
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: f540f6f8a3d6e8a499565b19623a9393
-      internalID: 1195901434
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: completed_collections_overlay_1px.unit-info-popup_3
-      rect:
-        serializedVersion: 2
-        x: 38
-        y: 36
-        width: 437
-        height: 235
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b5b777b320ee5a848bbf685d20d58a77
-      internalID: -746356529
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
+    sprites: []
     outline: []
     physicsShape: []
     bones: []
-    spriteID: d934b43936765e44389b56bf9bd495a4
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
     edges: []
     weights: []
     secondaryTextures: []
-    nameFileIdTable:
-      completed_collections_overlay_1px.unit-info-popup_0: -2043256499
-      completed_collections_overlay_1px.unit-info-popup_1: 191485441
-      completed_collections_overlay_1px.unit-info-popup_2: 1195901434
-      completed_collections_overlay_1px.unit-info-popup_3: -746356529
+    nameFileIdTable: {}
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
