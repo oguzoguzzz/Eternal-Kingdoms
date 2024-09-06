@@ -6,7 +6,7 @@ namespace DevelopersHub.RealtimeNetworking
 {
     public class Building : MonoBehaviour
     {
-        private static Building _instance = null; public static Building instance { get { return _instance;} set {_instance = value;}}
+        private static Building _instance = null; public static Building instance { get { return _instance; } set { _instance = value; } }
         [System.Serializable] public class Level
         {
             public int level = 1;
@@ -15,20 +15,20 @@ namespace DevelopersHub.RealtimeNetworking
         }
         private BuildGrid _grid = null;
 
-        [SerializeField] private int _rows = 1; public int rows { get { return _rows; }}
-        [SerializeField] private int _columns = 1; public int columns { get { return _columns; }}
+        [SerializeField] private int _rows = 1; public int rows { get { return _rows; } }
+        [SerializeField] private int _columns = 1; public int columns { get { return _columns; } }
 
         [SerializeField] private MeshRenderer _baseArea = null;
 
         [SerializeField] private Level[] _levels = null;
 
 
-        private int _currentX = 0; public int currentX { get { return _currentX; }}
-        private int _currentY = 0; public int currentY { get { return _currentY; }}
+        private int _currentX = 0; public int currentX { get { return _currentX; } }
+        private int _currentY = 0; public int currentY { get { return _currentY; } }
         private int _X = 0;
         private int _Y = 0;
 
-        public void PlaceOnGrid(int x, int y)
+        public void PlacedOnGrid(int x, int y)
         {
             _currentX = x;
             _currentY = y;
@@ -48,7 +48,7 @@ namespace DevelopersHub.RealtimeNetworking
             CameraController.instance.isPlacingBuilding = false;
             Destroy(gameObject);
         }
-        public void UpdateGridPosition (Vector3 basePosition, Vector3 currentPosition)
+        public void UpdateGridPosition(Vector3 basePosition, Vector3 currentPosition)
         {
             Vector3 dir = UI_Main.instance._grid.transform.TransformPoint(currentPosition) - UI_Main.instance._grid.transform.TransformPoint(basePosition);
 

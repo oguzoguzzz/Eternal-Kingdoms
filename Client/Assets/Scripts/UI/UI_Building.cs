@@ -8,11 +8,13 @@ namespace DevelopersHub.RealtimeNetworking
 
     public class UI_Building : MonoBehaviour
     {
+
         [SerializeField] private int _prefabIndex = 0;
         [SerializeField] private Button _button = null;
 
         private void Start()
         {
+
             _button.onClick.AddListener(Clicked);
         }
 
@@ -20,21 +22,30 @@ namespace DevelopersHub.RealtimeNetworking
         {
             UI_Shop.instance.SetStatus(false);
             UI_Main.instance.SetStatus(true);
-            
+
             Vector3 position = Vector3.zero;
 
+
             Building building = Instantiate(UI_Main.instance._buildingPrefabs[_prefabIndex], position, Quaternion.identity);
+
+
+
+            building.PlacedOnGrid(20, 20);
+
+
+
             Building.instance = building;
             CameraController.instance.isPlacingBuilding = true;
-            // todo: send request to server
         }
-        private void ConfirmBuild()
+
+        public void ConfirmBuild()
         {
             Packet packet = new Packet();
-            packet.Write((int) Player.RequestID.BUILD);
+            packet.Write((int)Player.RequestID.BUILD);
             packet.Write(SystemInfo.deviceUniqueIdentifier);
             packet.Write(_prefabIndex);
             Sender.TCP_Send(packet);
         }
+
     }
 }
