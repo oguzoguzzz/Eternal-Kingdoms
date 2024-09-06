@@ -43,8 +43,7 @@ namespace DevelopersHub.RealtimeNetworking
         public void SetStatus(bool status)
         {
             _active = status;
-            _shopButton.interactable = !status; // shop butonunu pasif hale getir
+            _elements.SetActive(status);
         }
     }
-
 }
