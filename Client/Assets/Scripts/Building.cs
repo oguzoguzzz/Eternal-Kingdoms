@@ -45,6 +45,7 @@ namespace DevelopersHub.RealtimeNetworking
         public void RemovedFromGrid()
         {
             _instance = null;
+            UI_Build.instance.SetStatus(false);
             CameraController.instance.isPlacingBuilding = false;
             Destroy(gameObject);
         }
@@ -52,8 +53,8 @@ namespace DevelopersHub.RealtimeNetworking
         {
             Vector3 dir = UI_Main.instance._grid.transform.TransformPoint(currentPosition) - UI_Main.instance._grid.transform.TransformPoint(basePosition);
 
-            int xDis = Mathf.RoundToInt(-dir.z / UI_Main.instance._grid.cellSize);
-            int yDis = Mathf.RoundToInt(dir.x / UI_Main.instance._grid.cellSize);
+            int xDis = Mathf.RoundToInt(dir.z / UI_Main.instance._grid.cellSize);
+            int yDis = Mathf.RoundToInt(-dir.x / UI_Main.instance._grid.cellSize);
 
             _currentX = _X + xDis;
             _currentY = _Y + yDis;

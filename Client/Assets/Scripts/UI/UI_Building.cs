@@ -36,6 +36,8 @@ namespace DevelopersHub.RealtimeNetworking
 
             Building.instance = building;
             CameraController.instance.isPlacingBuilding = true;
+
+            UI_Build.instance.SetStatus(true);
         }
 
         public void ConfirmBuild()

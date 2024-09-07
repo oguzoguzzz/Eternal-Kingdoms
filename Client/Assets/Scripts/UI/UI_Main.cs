@@ -37,6 +37,7 @@ namespace DevelopersHub.RealtimeNetworking
 
         private void ShopButtonClicked()
         {
+            UI_Build.instance.Cancel();
             UI_Shop.instance.SetStatus(true);
             SetStatus(false);
         }
