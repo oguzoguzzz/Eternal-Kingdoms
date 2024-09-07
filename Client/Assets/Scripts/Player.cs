@@ -14,7 +14,8 @@ namespace DevelopersHub.RealtimeNetworking
         private void Start()
         {
             RealtimeNetworking.OnLongReceived += ReceivedLong;
-            RealtimeNetworking.OnStringReceived += ReceivedString;
+            RealtimeNetworking.OnPacketReceived += ReceivedPacket;
+
             ConnectToServer();
         }
         private void ReceivedLong(int id, long value)
@@ -29,18 +30,35 @@ namespace DevelopersHub.RealtimeNetworking
             }
         }
 
-        private void ReceivedString(int id, string value)
+        private void ReceivedPacket(Packet packet)
         {
+            int id = packet.ReadInt();
             switch (id)
             {
             
                 case 2:
-                    Data.Player player = Data.Deserialize<Data.Player>(value);
+                    string playerClass = packet.ReadString();
+                    Data.Player player = Data.Deserialize<Data.Player>(playerClass);
                     UI_Main.instance._goldText.text = player.gold.ToString();
                     UI_Main.instance._foodText.text = player.food.ToString();
                     UI_Main.instance._woodText.text = player.wood.ToString();
                     UI_Main.instance._stoneText.text = player.stone.ToString();
                     UI_Main.instance._gemsText.text = player.gems.ToString();
+                    break;
+                case 3:
+                    int response = packet.ReadInt();
+                    switch (response)
+                    {
+                        case 0:
+                            Debug.Log("No resources");
+                            break;
+                        case 1:
+                            Debug.Log("Place Successfully");
+                            break;
+                        case 2:
+                            Debug.Log("Place taken");
+                            break;
+                    }
                     break;
             }
         }

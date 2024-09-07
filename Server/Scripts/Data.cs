@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using System.Xml.Serialization;
 using System.IO;
 
-namespace DevelopersHub.RealtimeNetworking.Server.Scripts
+namespace DevelopersHub.RealtimeNetworking.Server
 {
     public static class Data
     {
@@ -17,8 +17,29 @@ namespace DevelopersHub.RealtimeNetworking.Server.Scripts
             public int wood = 0;
             public int stone = 0;
             public int gems = 0;
+            public List<Building> buildings = new List<Building>();
         }
-
+        public class Building
+        {
+            public string id = "";
+            public int level = 0;
+            public long databaseID = 0;
+            public int x = 0;
+            public int y = 0;
+            public int columns = 0;
+            public int rows = 0;
+        }
+        public class ServerBuilding
+        {
+            public string id = "";
+            public int level = 0;
+            public long databaseID = 0;
+            public int requiredGold = 0;
+            public int requiredFood = 0;
+            public int requiredWood = 0;
+            public int columns = 0;
+            public int rows = 0;
+        }
         public static string Serialize<T>(this T target)
         {
             XmlSerializer xml = new XmlSerializer(typeof(T));

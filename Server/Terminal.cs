@@ -34,10 +34,12 @@ namespace DevelopersHub.RealtimeNetworking.Server
             int id = packet.ReadInt();
             switch (id) 
             {
-                case 3:
+                case 3: // Build Request
                     string device = packet.ReadString();
-                    int building = packet.ReadInt();
-                    Database.PlaceBuilding(clientID, device, building);
+                    string building = packet.ReadString();
+                    int x = packet.ReadInt();
+                    int y = packet.ReadInt();
+                    Database.PlaceBuilding(clientID, device, building, x ,y);
                     break;
             }
         }

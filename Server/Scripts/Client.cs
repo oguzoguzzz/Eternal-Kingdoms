@@ -14,6 +14,9 @@ namespace DevelopersHub.RealtimeNetworking.Server
         public string sendToken = "xxxxx";
         public string receiveToken = "xxxxx";
 
+        public string device = "";
+        public long account = 0;
+
         public Client(int _clientId)
         {
             id = _clientId;
@@ -187,6 +190,8 @@ namespace DevelopersHub.RealtimeNetworking.Server
             Terminal.OnClientDisconnected(id, ip.Address.ToString());
             tcp.Disconnect();
             udp.Disconnect();
+            device = "";
+            account = 0;
         }
 
     }

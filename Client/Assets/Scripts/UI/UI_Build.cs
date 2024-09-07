@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using DevelopersHub.RealtimeNetworking;
 using UnityEngine;
 using UnityEngine.UI;
+using DevelopersHub.RealtimeNetworking.Client;
 
-namespace DevelopersHub
+namespace DevelopersHub.RealtimeNetworking
 {
 public class UI_Build : MonoBehaviour
     {
@@ -59,15 +60,24 @@ public class UI_Build : MonoBehaviour
         }
         private void Confirm()
         {
-
+            if (Building.instance != null)
+            {
+                Packet packet = new Packet();
+                packet.Write((int)Player.RequestID.BUILD);
+                packet.Write(SystemInfo.deviceUniqueIdentifier);
+                packet.Write(Building.instance.id);
+                packet.Write(Building.instance.currentX);
+                packet.Write(Building.instance.currentY);
+                Sender.TCP_Send(packet);
+            }
         }
         public void Cancel()
         {
-            if (Building.instance != null)
+            if(Building.instance != null)
             {
                 CameraController.instance.isPlacingBuilding = false;
                 Building.instance.RemovedFromGrid();
-            }        
+            }
         }
     }
 }

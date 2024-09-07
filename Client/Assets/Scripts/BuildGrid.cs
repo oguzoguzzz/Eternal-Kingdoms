@@ -47,9 +47,9 @@ namespace DevelopersHub.RealtimeNetworking
             }
             return false;
         }
-        public bool CanPlaceBuilding(Building building, int x , int y)
+        public bool CanPlaceBuilding(Building building, int x, int y)
         {
-            if (building.currentX < 0 || building.currentY < 0 || building.currentX + building.columns > _columns || building.currentY + building.rows > _rows)
+            if(building.currentX < 0 || building.currentY < 0 || building.currentX + building.columns > _columns || building.currentY + building.rows > _rows)
             {
                 return false;
             }

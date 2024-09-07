@@ -38,15 +38,5 @@ namespace DevelopersHub.RealtimeNetworking
 
             UI_Build.instance.SetStatus(true);
         }
-
-        public void ConfirmBuild()
-        {
-            Packet packet = new Packet();
-            packet.Write((int)Player.RequestID.BUILD);
-            packet.Write(SystemInfo.deviceUniqueIdentifier);
-            packet.Write(_prefabIndex);
-            Sender.TCP_Send(packet);
-        }
-
     }
 }
