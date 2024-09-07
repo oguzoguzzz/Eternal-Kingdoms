@@ -13,6 +13,18 @@ namespace DevelopersHub.RealtimeNetworking
 
         public List<Building> buildings = new List<Building>();
 
+        public Building GetBuilding(long databaseID)
+        {
+            for (int i = 0; i< buildings.Count; i++)
+            {
+                if (buildings[i].databaseID == databaseID)
+                {
+                    return buildings[i];
+                }
+            }
+            return null;
+        }
+
         public Vector3 GetStartPosition(int x, int y)
         {
             Vector3 position = transform.position;

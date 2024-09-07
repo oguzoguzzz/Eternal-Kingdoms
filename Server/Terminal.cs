@@ -29,17 +29,30 @@ namespace DevelopersHub.RealtimeNetworking.Server
         #endregion
 
         #region Data
+        public enum RequestID
+        {
+            AUTH = 1, SYNC = 2, BUILD = 3
+        }
         public static void ReceivedPacket(int clientID, Packet packet)
         {
             int id = packet.ReadInt();
-            switch (id) 
+            string device = "";
+            switch ((RequestID)id)
             {
-                case 3: // Build Request
-                    string device = packet.ReadString();
+                case RequestID.AUTH:
+                    device = packet.ReadString();
+                    Database.AuthenticatePlayer(clientID, device);
+                    break;
+                case RequestID.SYNC:
+                    device = packet.ReadString();
+                    Database.SyncPlayerData(clientID, device);
+                    break;
+                case RequestID.BUILD:
+                    device = packet.ReadString();
                     string building = packet.ReadString();
                     int x = packet.ReadInt();
                     int y = packet.ReadInt();
-                    Database.PlaceBuilding(clientID, device, building, x ,y);
+                    Database.PlaceBuilding(clientID, device, building, x, y);
                     break;
             }
         }
@@ -51,15 +64,6 @@ namespace DevelopersHub.RealtimeNetworking.Server
 
         public static void ReceivedString(int clientID, int packetID, string data)
         {
-            switch (packetID) 
-            {
-                case 1:
-                    Database.AuthenticatePlayer(clientID, data);
-                    break;
-                case 2:
-                    Database.SyncPlayerData(clientID, data);
-                    break;
-            }
         }
 
         public static void ReceivedInteger(int clientID, int packetID, int data)

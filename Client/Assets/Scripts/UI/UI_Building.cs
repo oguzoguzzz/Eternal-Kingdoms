@@ -8,7 +8,7 @@ namespace DevelopersHub.RealtimeNetworking
 
     public class UI_Building : MonoBehaviour
     {
-        [SerializeField] private int _prefabIndex = 0;
+        [SerializeField] private string _id = "";
         [SerializeField] private Button _button = null;
 
         private void Start()
@@ -19,24 +19,24 @@ namespace DevelopersHub.RealtimeNetworking
 
         private void Clicked()
         {
-            UI_Shop.instance.SetStatus(false);
-            UI_Main.instance.SetStatus(true);
+            Building prefab = UI_Main.instance.GetBuildingPrefab(_id);
+            if(prefab)
+            {
+                UI_Shop.instance.SetStatus(false);
+                UI_Main.instance.SetStatus(true);
 
-            Vector3 position = Vector3.zero;
+                Vector3 position = Vector3.zero;
 
+                Building building = Instantiate(prefab, position, Quaternion.identity);
 
-            Building building = Instantiate(UI_Main.instance._buildingPrefabs[_prefabIndex], position, Quaternion.identity);
+                building.PlacedOnGrid(20, 20);
+                building._baseArea.gameObject.SetActive(true);
 
+                Building.instance = building;
+                CameraController.instance.isPlacingBuilding = true;
 
-
-            building.PlacedOnGrid(20, 20);
-
-
-
-            Building.instance = building;
-            CameraController.instance.isPlacingBuilding = true;
-
-            UI_Build.instance.SetStatus(true);
+                UI_Build.instance.SetStatus(true);
+            }
         }
     }
 }

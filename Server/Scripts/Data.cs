@@ -40,19 +40,27 @@ namespace DevelopersHub.RealtimeNetworking.Server
             public int columns = 0;
             public int rows = 0;
         }
-        public static string Serialize<T>(this T target)
+        public async static Task<string> Serialize<T>(this T target)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(T));
-            StringWriter writer = new StringWriter();
-            xml.Serialize(writer, target);
-            return writer.ToString();
+            Task<string> task = Task.Run(() =>
+            {
+                XmlSerializer xml = new XmlSerializer(typeof(T));
+                StringWriter writer = new StringWriter();
+                xml.Serialize(writer, target);
+                return writer.ToString();
+            });
+            return await task;
         }
 
-        public static T Deserialize<T>(this string target)
+        public async static Task<T> Deserialize<T>(this string target)
         {
-            XmlSerializer xml = new XmlSerializer(typeof(T));
-            StringReader reader = new StringReader(target);
-            return (T) xml.Deserialize(reader);
+            Task<T> task = Task.Run(() =>
+            {
+                XmlSerializer xml = new XmlSerializer(typeof(T));
+                StringReader reader = new StringReader(target);
+                return (T)xml.Deserialize(reader);
+            });
+            return await task;
         }
     }
 }

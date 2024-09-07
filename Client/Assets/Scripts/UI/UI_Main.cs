@@ -47,5 +47,16 @@ namespace DevelopersHub.RealtimeNetworking
             _active = status;
             _elements.SetActive(status);
         }
+        public Building GetBuildingPrefab(string id)
+        {
+            for (int i = 0; i < _buildingPrefabs.Length; i++)
+            {
+                if(_buildingPrefabs[i].id == id)
+                {
+                    return _buildingPrefabs[i];
+                }
+            }
+            return null;
+        }
     }
 }

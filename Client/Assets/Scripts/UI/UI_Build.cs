@@ -60,7 +60,7 @@ public class UI_Build : MonoBehaviour
         }
         private void Confirm()
         {
-            if (Building.instance != null)
+            if (Building.instance != null && UI_Main.instance._grid.CanPlaceBuilding(Building.instance, Building.instance.currentX, Building.instance.currentY))
             {
                 Packet packet = new Packet();
                 packet.Write((int)Player.RequestID.BUILD);
@@ -69,6 +69,7 @@ public class UI_Build : MonoBehaviour
                 packet.Write(Building.instance.currentX);
                 packet.Write(Building.instance.currentY);
                 Sender.TCP_Send(packet);
+                Cancel();
             }
         }
         public void Cancel()

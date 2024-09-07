@@ -3,6 +3,7 @@ using MySql.Data.MySqlClient;
 using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
+using System.Drawing;
 
 
 namespace DevelopersHub.RealtimeNetworking.Server
@@ -57,7 +58,10 @@ namespace DevelopersHub.RealtimeNetworking.Server
             long account_id = await AuthenticatePlayerAsync(id, device);
             Server.clients[id].device = device;
             Server.clients[id].account = account_id;
-            Sender.TCP_Send(id, 1, account_id);
+            Packet packet = new Packet();
+            packet.Write((int)Terminal.RequestID.AUTH);
+            packet.Write(account_id);
+            Sender.TCP_Send(id, packet);
         }
 
         private async static Task<long> AuthenticatePlayerAsync(int id, string device)
@@ -102,8 +106,9 @@ namespace DevelopersHub.RealtimeNetworking.Server
             List<Data.Building> buildings = await GetBuildingsAsync(account_id);
             player.buildings = buildings;
             Packet packet = new Packet();
-            packet.Write(2);
-            packet.Write(Data.Serialize<Data.Player>(player));
+            packet.Write((int)Terminal.RequestID.SYNC);
+            string playerData = await Data.Serialize<Data.Player>(player);
+            packet.Write(playerData);
             Sender.TCP_Send(id , packet);
         }
 
@@ -153,17 +158,16 @@ namespace DevelopersHub.RealtimeNetworking.Server
                 }
                 else
                 {
-                    /*
                     for (int i = 0; i < buildings.Count; i++)
                     {
-                        Rect rect1 = new Rect(buildings[i].currentX, buildings[i].currentY, buildings[i].columns, buildings[i].rows);
-                        Rect rect2 = new Rect(building.currentX, building.currentY, building.columns, building.rows);
-                        if (rect2.Overlaps(rect1))
+                        Rectangle rect1 = new Rectangle(buildings[i].x, buildings[i].y, buildings[i].columns, buildings[i].rows);
+                        Rectangle rect2 = new Rectangle(x, y, building.columns, building.rows);
+                        if (rect2.IntersectsWith(rect1))
                         {
-                            return false;
+                            canPlaceBuilding = false;
+                            break;
                         }
                     }
-                    */
                 }
                 if (canPlaceBuilding)
                 {
@@ -186,11 +190,10 @@ namespace DevelopersHub.RealtimeNetworking.Server
             Task<long> task = Task.Run(() =>
             {
                 long id = 0;
-                string query = String.Format("UPDATE accounts SET gold = gold - {0}, food = food - {1}, wood = wood - {2} FROM accounts WHERE id = {3};", building.requiredGold, building.requiredFood, building.requiredWood, account_id);
+                string query = String.Format("UPDATE accounts SET gold = gold - {0}, food = food - {1}, wood = wood - {2} WHERE id = {3};", building.requiredGold, building.requiredFood, building.requiredWood, account_id);
                 using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
                 {
                     command.ExecuteNonQuery();
-                    account_id = command.LastInsertedId;
                 }
                 query = String.Format("INSERT INTO buildings (global_id, account_id, x_position, y_position, columns_count, rows_count) VALUES('{0}', {1},{2},{3},{4},{5});", building.id, account_id, x, y, building.columns, building.rows);
                 using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
