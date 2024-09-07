@@ -8,8 +8,6 @@ namespace DevelopersHub.RealtimeNetworking
 
     public class UI_Building : MonoBehaviour
     {
-        public string id = "";
-
         [SerializeField] private int _prefabIndex = 0;
         [SerializeField] private Button _button = null;
 

@@ -11,6 +11,8 @@ namespace DevelopersHub.RealtimeNetworking
         private int _columns = 45;
         private float _cellSize = 1f; public float cellSize { get { return _cellSize; } }
 
+        public List<Building> buildings = new List<Building>();
+
         public Vector3 GetStartPosition(int x, int y)
         {
             Vector3 position = transform.position;
@@ -44,6 +46,26 @@ namespace DevelopersHub.RealtimeNetworking
                 return true;
             }
             return false;
+        }
+        public bool CanPlaceBuilding(Building building, int x , int y)
+        {
+            if (building.currentX < 0 || building.currentY < 0 || building.currentX + building.columns > _columns || building.currentY + building.rows > _rows)
+            {
+                return false;
+            }
+            for (int i = 0; i < buildings.Count; i++)
+            {
+                if(buildings[i] != building)
+                {
+                    Rect rect1 = new Rect(buildings[i].currentX, buildings[i].currentY, buildings[i].columns, buildings[i].rows);
+                    Rect rect2 = new Rect(building.currentX, building.currentY, building.columns, building.rows);
+                    if (rect2.Overlaps(rect1))
+                    {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
 
 

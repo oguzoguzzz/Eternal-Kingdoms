@@ -212,6 +212,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3deedebdfeb9401459b47605137879c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  id: goldmine
   _rows: 3
   _columns: 3
   _baseArea: {fileID: 7215235816035699814}
