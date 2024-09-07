@@ -31,7 +31,10 @@ namespace DevelopersHub.RealtimeNetworking
             position += (transform.right.normalized * columns * _cellSize) + (transform.forward.normalized * rows * _cellSize);
             return position;
         }
-
+        public Vector3 GetEndPosition(Building building)
+        {
+            return GetEndPosition(building.currentX, building.currentY, building.columns, building.rows);
+        }
         public bool IsWorldPositionIsOnPlane(Vector3 position, int x, int y, int rows, int columns)
         {
             position = transform.InverseTransformPoint(position);
