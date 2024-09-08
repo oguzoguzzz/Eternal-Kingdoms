@@ -6,8 +6,10 @@ using System.IO;
 
 namespace DevelopersHub.RealtimeNetworking
 {
+    // oyunun verileri için bir yapı sağlar.
     public static class Data
     {
+        // Player: Oyuncu verileri için
         public class Player
         {
             public int gold = 0;
@@ -15,8 +17,9 @@ namespace DevelopersHub.RealtimeNetworking
             public int wood = 0;
             public int stone = 0;
             public int gems = 0;
-            public List<Building> buildings = new List<Building>();
+            public List<Building> buildings = new List<Building>(); // buildings: Oyuncunun sahip olduğu binaların listesi
         }
+        // Building: Bina verileri için
         public class Building
         {
             public string id = "";
@@ -27,6 +30,7 @@ namespace DevelopersHub.RealtimeNetworking
             public int columns = 0;
             public int rows = 0;
         }
+        // ServerBuilding: Sunucu tarafında kullanılan bina verileri için
         public class ServerBuilding
         {
             public string id = "";
@@ -38,7 +42,7 @@ namespace DevelopersHub.RealtimeNetworking
             public int columns = 0;
             public int rows = 0;
         }
-
+        // Verileri XML formatında serialize eder
         public static string Serialize<T>(this T target)
         {
             XmlSerializer xml = new XmlSerializer(typeof(T));
@@ -46,7 +50,7 @@ namespace DevelopersHub.RealtimeNetworking
             xml.Serialize(writer, target);
             return writer.ToString();
         }
-
+        // XML formatındaki verileri deserialize eder
         public static T Deserialize<T>(this string target)
         {
             XmlSerializer xml = new XmlSerializer(typeof(T));

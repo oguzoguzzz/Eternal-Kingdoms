@@ -8,18 +8,18 @@ using System.IO;
 
 namespace DevelopersHub.RealtimeNetworking.Server
 {
-    public static class Data
+    public static class Data // oyunun veri yönetimini sağlar.
     {
-        public class Player
+        public class Player // Oyuncu verilerini tutar.
         {
             public int gold = 0;
             public int food = 0;
             public int wood = 0;
             public int stone = 0;
             public int gems = 0;
-            public List<Building> buildings = new List<Building>();
+            public List<Building> buildings = new List<Building>(); // Oyuncunun binalarını tutar.
         }
-        public class Building
+        public class Building // Bina verilerini tutar.
         {
             public string id = "";
             public int level = 0;
@@ -29,7 +29,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             public int columns = 0;
             public int rows = 0;
         }
-        public class ServerBuilding
+        public class ServerBuilding // Sunucu tarafındaki bina verilerini tutar
         {
             public string id = "";
             public int level = 0;

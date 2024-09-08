@@ -5,36 +5,40 @@ namespace DevelopersHub.RealtimeNetworking
     using UnityEngine;
     using DevelopersHub.RealtimeNetworking.Client;
 
+    // Bu sınıf, oyuncunun bilgilerini yönetmek için kullanılır.
     public class Player : MonoBehaviour
     {
+        // RequestID enum'u, sunucuya gönderilecek isteklerin türünü belirlemek için kullanılır. Şu anda dört tür istek vardır:
         public enum RequestID
         {
             AUTH = 1, SYNC = 2, BUILD = 3, REPLACE = 4
         }
         private void Start()
         {
+            // Start metodu, oyun başladıktan sonra çalışır. 
+            // RealtimeNetworking.OnPacketReceived olayına abone olur ve ConnectToServer metodunu çağırır.
             RealtimeNetworking.OnPacketReceived += ReceivedPacket;
             ConnectToServer();
         }
+        // sunucudan gelen paketleri işler. Paketin içindeki istek türünü kontrol eder ve buna göre farklı işlemler gerçekleştirir.
         private void ReceivedPacket(Packet packet)
         {
             int id = packet.ReadInt();
 
             switch ((RequestID)id)
             {
+                // hesap kimliğini alır ve SendSyncRequest metodunu çağırır.
                 case RequestID.AUTH:
                     long accountID = packet.ReadLong();
                     SendSyncRequest();
                     break;
-
-
+                // oyuncu verilerini alır ve SyncData metodunu çağırır.
                 case RequestID.SYNC:
                     string playerData = packet.ReadString();
                     Data.Player playerSyncData = Data.Deserialize<Data.Player>(playerData);
                     SyncData(playerSyncData);
                     break;
-
-
+                // bina inşa sonucu alır ve buna göre farklı işlemler gerçekleştirir.
                 case RequestID.BUILD:
                     int response = packet.ReadInt();
                     switch (response)
@@ -51,7 +55,7 @@ namespace DevelopersHub.RealtimeNetworking
                             break;
                     }
                     break;
-
+                    // bina yerine koyma sonucu alır ve buna göre farklı işlemler gerçekleştirir.
                     case RequestID.REPLACE:
                     int replaceResponse = packet.ReadInt();
                     int replaceX = packet.ReadInt();
@@ -86,6 +90,7 @@ namespace DevelopersHub.RealtimeNetworking
                     break;
             }
         }
+        // sunucuya veri senkronizasyonu isteği gönderir.
         public void SendSyncRequest()
         {
             Packet p = new Packet();
@@ -93,6 +98,9 @@ namespace DevelopersHub.RealtimeNetworking
             p.Write(SystemInfo.deviceUniqueIdentifier);
             Sender.TCP_Send(p);
         }
+        // oyuncu verilerini güncellemek için kullanılır.
+        // Oyuncunun altın, gıda, odun, taş ve mücevher miktarlarını güncellemek için kullanılır.
+        // Ayrıca, oyuncunun sahip olduğu binaların listesini güncellemek için kullanılır.
         private void SyncData(Data.Player player)
         {
             UI_Main.instance._goldText.text = player.gold.ToString();
@@ -125,6 +133,9 @@ namespace DevelopersHub.RealtimeNetworking
                 }
             }
         }
+        // sunucuya bağlanma sonucu alır.
+        // Bağlanma başarılı ise, DisconnectedFromServer olayına abone olur ve oturum açma isteği gönderir.
+        // Bağlanma başarısız ise, bağlantı başarısız mesaj kutusu gösterilir.
         private void ConnectionResponse(bool successful)
         {
             if (successful)
@@ -142,12 +153,15 @@ namespace DevelopersHub.RealtimeNetworking
             }
             RealtimeNetworking.OnConnectingToServerResult -= ConnectionResponse;
         }
-
+        // sunucuya bağlanmak için kullanılır.
+        // Bağlanma sonucu ConnectionResponse metodunu çağırır.
         public void ConnectToServer()
         {
             RealtimeNetworking.OnConnectingToServerResult += ConnectionResponse;
             RealtimeNetworking.Connect();
         }
+        // sunucudan ayrılma sonucu alır.
+        // Bağlantı başarısız mesaj kutusu gösterilir.
         private void DisconnectedFromServer()
         {
             RealtimeNetworking.OnDisconnectedFromServer -= DisconnectedFromServer;

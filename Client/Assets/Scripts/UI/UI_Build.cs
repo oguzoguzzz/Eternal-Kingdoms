@@ -9,19 +9,19 @@ namespace DevelopersHub.RealtimeNetworking
 {
 public class UI_Build : MonoBehaviour
     {
-        [SerializeField] public GameObject _elements = null;
-        public RectTransform buttonConfirm = null;
-        public RectTransform buttonCancel = null;
-        [HideInInspector] public Button clickConfirmButton = null; 
-        private static UI_Build _instance = null; public static UI_Build instance { get { return _instance;}}
+        [SerializeField] public GameObject _elements = null; // Bina UI öğelerini tutar.
+        public RectTransform buttonConfirm = null; // Onay butonunu tutar.
+        public RectTransform buttonCancel = null; // İptal butonunu tutar.
+        [HideInInspector] public Button clickConfirmButton = null;  // Onay butonunun tıklandığında çağrılacak fonksiyonu tutar.
+        private static UI_Build _instance = null; public static UI_Build instance { get { return _instance;}} // Sınıfın tek bir örneğini tutar.
 
-        private void Awake()
+        private void Awake() // Oyun başladığında çağrılır. Sınıfın tek bir örneğini oluşturur ve bina UI öğelerini gizler.
         {
             _instance = this;
             _elements.SetActive(false);
             clickConfirmButton = buttonConfirm.gameObject.GetComponent<Button>();
         }
-        private void Start()
+        private void Start() // Oyun başladığında çağrılır. Onay ve iptal butonlarının tıklandığında çağrılacak fonksiyonları ayarlar.
         {
             buttonConfirm.gameObject.GetComponent<Button>().onClick.AddListener(Confirm);
             buttonCancel.gameObject.GetComponent<Button>().onClick.AddListener(Cancel);
@@ -30,7 +30,7 @@ public class UI_Build : MonoBehaviour
             buttonCancel.anchorMin = Vector3.zero;
             buttonCancel.anchorMax = Vector3.zero;
         }
-        private void Update()
+        private void Update() // Her frame'de çağrılır. Bina UI öğelerini günceller.
         {
             if(Building.buildInstance != null && CameraController.instance.isPlacingBuilding)
             {
@@ -56,29 +56,30 @@ public class UI_Build : MonoBehaviour
                 buttonCancel.anchoredPosition = cancelPoint;
             }
         }
-        public void SetStatus(bool status)
+        public void SetStatus(bool status) // Bina UI öğelerinin durumunu ayarlar.
         {
             _elements.SetActive(status);
         }
-        private void Confirm()
+        private void Confirm() // Onay butonunun tıklandığında çağrılır. Bina prefabını yerleştirir ve sunucuya bilgi gönderir.
         {
             if (Building.buildInstance != null && UI_Main.instance._grid.CanPlaceBuilding(Building.buildInstance, Building.buildInstance.currentX, Building.buildInstance.currentY))
+            //  Bina prefabının yerleştirilmesi için gerekli kontrolleri yapar.
             {
-                Packet packet = new Packet();
+                Packet packet = new Packet(); // Sunucuya bilgi göndermek için bir paket oluşturur.
                 packet.Write((int)Player.RequestID.BUILD);
                 packet.Write(SystemInfo.deviceUniqueIdentifier);
                 packet.Write(Building.buildInstance.id);
                 packet.Write(Building.buildInstance.currentX);
                 packet.Write(Building.buildInstance.currentY);
-                Sender.TCP_Send(packet);
+                Sender.TCP_Send(packet); // Sunucuya paketi gönderir.
                 Cancel();
             }
         }
-        public void Cancel()
+        public void Cancel() // İptal butonunun tıklandığında çağrılır. Bina prefabını kaldırır.
         {
             if(Building.buildInstance != null)
             {
-                CameraController.instance.isPlacingBuilding = false;
+                CameraController.instance.isPlacingBuilding = false; // Kamera kontrolörünün yerleştirme modunu tutar.
                 Building.buildInstance.RemovedFromGrid();
             }
         }

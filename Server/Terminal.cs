@@ -3,11 +3,11 @@ using System.Numerics;
 
 namespace DevelopersHub.RealtimeNetworking.Server
 {
-    class Terminal
+    class Terminal // sunucunun temel işlemlerini sağlar.
     {
 
-        #region Update
-        public const int updatesPerSecond = 30;
+        #region Update // Sunucunun güncelleme metodudur. Her güncelleme periyodunda çağrılır.
+        public const int updatesPerSecond = 30; // Sunucunun güncelleme hızını belirler.
         public static void Update()
         {
             
@@ -15,25 +15,29 @@ namespace DevelopersHub.RealtimeNetworking.Server
         #endregion
 
         #region Connection
-        public const int maxPlayers = 100000;
-        public const int port = 5555;
-        public static void OnClientConnected(int id, string ip)
+        public const int maxPlayers = 100000; // Sunucunun desteklediği maksimum oyuncu sayısını belirler.
+        public const int port = 5555; // Sunucunun dinlediği port numarasını belirler.
+        public static void OnClientConnected(int id, string ip) // Bir istemci bağlandığında çağrılır.
         {
             
         }
 
-        public static void OnClientDisconnected(int id, string ip)
+        public static void OnClientDisconnected(int id, string ip) //  Bir istemci bağlantısını kestiğinde çağrılır.
         {
             
         }
         #endregion
 
         #region Data
-        public enum RequestID
+        public enum RequestID //  İstemciden gelen paketlerin türlerini belirler.
         {
-            AUTH = 1, SYNC = 2, BUILD = 3, REPLACE = 4
+            AUTH = 1, SYNC = 2, BUILD = 3, REPLACE = 4 // AUTH: İstemcinin kimlik doğrulama talebi.
+            // SYNC: İstemcinin veri senkronizasyonu talebi.
+            // BUILD: İstemcinin bina yerleştirme talebi.
+            // REPLACE: İstemcinin bina değiştirme talebi.
         }
-        public static void ReceivedPacket(int clientID, Packet packet)
+        public static void ReceivedPacket(int clientID, Packet packet) //  Bir istemciden paket aldığında çağrılır. 
+        // Paketi işler ve gerekli işlemleri gerçekleştirir.
         {
             int id = packet.ReadInt();
             string device = "";

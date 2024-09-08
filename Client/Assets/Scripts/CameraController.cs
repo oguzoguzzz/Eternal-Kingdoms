@@ -1,22 +1,26 @@
 namespace DevelopersHub.RealtimeNetworking
 {
+    // Bu bölüm, gerekli kütüphaneleri ve namespace'ları tanımlar.
     using System.Collections;
     using System.Collections.Generic;
     using UnityEngine;
     using UnityEngine.EventSystems;
-
+    
+    // Bu sınıf, kameranın kontrolünü sağlar.
     public class CameraController : MonoBehaviour
     {
-
+        // Bu bölüm, kameranın static bir örneğini oluşturur ve erişimi sağlar.
         private static CameraController _instance = null; public static CameraController instance { get { return _instance; } }
 
+        // Bu bölüm, kameranın hareket ve zoom hızlarını ayarlamak için kullanılan değişkenleri tanımlar.
         [SerializeField] private Camera _camera = null;
         [SerializeField] private float _moveSpeed = 50;
         [SerializeField] private float _moveSmooth = 5;
 
-        [SerializeField] private float _zoomSpeed = 5f;
+        [SerializeField] private float _zoomSpeed = 10f;
         [SerializeField] private float _zoomSmooth = 5;
 
+        // Bu bölüm, kameranın çeşitli ayarlarını ve durumlarını saklamak için kullanılan değişkenleri tanımlar.
         private Controls _inputs = null;
 
         private bool _zooming = false;
@@ -28,7 +32,7 @@ namespace DevelopersHub.RealtimeNetworking
         private float _down = 10;
         private float _angle = 45;
         private float _zoom = 5;
-        private float _zoomMax = 10;
+        private float _zoomMax = 100;
         private float _zoomMin = 1;
         private Vector2 _zoomPositionOnScreen = Vector2.zero;
         private Vector3 _zoomPositionInWorld = Vector3.zero;
@@ -46,6 +50,8 @@ namespace DevelopersHub.RealtimeNetworking
         private bool _replacing = false; public bool isReplacingBuilding { get { return _replacing; } set { _replacing = value; } }
         private Vector3 _replaceBasePosition = Vector3.zero;
         private bool _replacingBuilding = false;
+
+        // Bu yöntem, kameranın başlatılmasını sağlar ve gerekli game objelerini oluşturur.
         private void Awake()
         {
             _instance = this;
@@ -56,12 +62,13 @@ namespace DevelopersHub.RealtimeNetworking
             _camera.orthographic = true;
             _camera.nearClipPlane = 0;
         }
-
+        // Bu yöntem, kameranın başlatılmasını sağlar ve varsayılan ayarlarını uygular.
         private void Start()
         {
             Initialize(Vector3.zero, 40, 40, 40, 40, 45, 10, 5, 20);
         }
 
+        // Bu yöntem, kameranın ayarlarını uygular ve sınırlandırmalarını belirler.
         public void Initialize(Vector3 center, float right, float left, float up, float down, float angle, float zoom, float zoomMin, float zoomMax)
         {
             _center = center;
@@ -91,6 +98,7 @@ namespace DevelopersHub.RealtimeNetworking
             _target.localEulerAngles = Vector3.zero;
         }
 
+        // Bu yöntemler, kameranın etkinleştirilmesi ve devre dışı bırakılması durumunda çalışır.
         private void OnEnable()
         {
             _inputs.Enable();
@@ -99,7 +107,7 @@ namespace DevelopersHub.RealtimeNetworking
             _inputs.Main.TouchZoom.started += _ => ZoomStarted();
             _inputs.Main.PointerClick.performed += _ => ScreenClicked();
         }
-
+        // Bu yöntemler, kameranın etkinleştirilmesi ve devre dışı bırakılması durumunda çalışır.
         private void OnDisable()
         {
             _inputs.Main.Move.started -= _ => MoveStarted();
@@ -110,6 +118,7 @@ namespace DevelopersHub.RealtimeNetworking
 
             _inputs.Disable();
         }
+        // Bu yöntem, ekranın tıklandığında çalışır ve kameranın durumunu günceller.
         private void ScreenClicked()
         {
             Vector2 position = _inputs.Main.PointerPosition.ReadValue<Vector2>();
@@ -142,6 +151,7 @@ namespace DevelopersHub.RealtimeNetworking
                 }
             }
         }
+        // Bu yöntem, ekran noktasının UI elemanları üzerinde olup olmadığını kontrol eder.
         public bool IsScreenPointOverUI(Vector2 position)
         {
             PointerEventData data = new PointerEventData(EventSystem.current);
@@ -150,6 +160,7 @@ namespace DevelopersHub.RealtimeNetworking
             EventSystem.current.RaycastAll(data,results);
             return results.Count > 0;
         }
+        // Bu yöntemler, kameranın hareketinin başlatılması ve iptal edilmesi durumunda çalışır.
         private void MoveStarted()
         {
             if (UI_Main.instance.isActive)
@@ -184,7 +195,7 @@ namespace DevelopersHub.RealtimeNetworking
                 }
             }
         }
-
+        // Bu yöntemler, kameranın hareketinin başlatılması ve iptal edilmesi durumunda çalışır.
         private void MoveCanceled()
         {
             _moving = false;
@@ -198,7 +209,7 @@ namespace DevelopersHub.RealtimeNetworking
                 }
             }
         }
-
+        // Bu yöntemler, kameranın zoomunun başlatılması ve iptal edilmesi durumunda çalışır.
         private void ZoomStarted()
         {
             if (UI_Main.instance.isActive)
@@ -218,12 +229,12 @@ namespace DevelopersHub.RealtimeNetworking
                 _zooming = true;
             }
         }
-
+        // Bu yöntemler, kameranın zoomunun başlatılması ve iptal edilmesi durumunda çalışır.
         private void ZoomCanceled()
         {
             _zooming = false;
         }
-
+        // Bu yöntem, kameranın durumunu güncellemek için kullanılır.
         private void Update()
         {
 
@@ -268,7 +279,7 @@ namespace DevelopersHub.RealtimeNetworking
                     _root.position -= _root.forward.normalized * move.y * _moveSpeed * _zoom / _zoomMax;
                 }
             }
-
+            
             AdjustBounds();
 
             if (_camera.orthographicSize != _zoom)
@@ -296,7 +307,7 @@ namespace DevelopersHub.RealtimeNetworking
                 Building.selectedInstance.UpdateGridPosition(_replaceBasePosition, pos);
             }
         }
-
+        // Bu yöntem, kameranın sınırlandırmalarını güncellemek için kullanılır.
         private void AdjustBounds()
         {
             if(_zoom < _zoomMin)
@@ -349,13 +360,13 @@ namespace DevelopersHub.RealtimeNetworking
                 _root.position += Vector3.forward * Mathf.Abs((_center.z - _down) - dl.z);
             }
         }
-
+        // Bu metod, kameranın ortografik boyutunu hesaplar.
         private float PlaneOrtographicSize()
         {
             float h = _zoom * 2f;
             return h / Mathf.Sin(_angle * Mathf.Deg2Rad) / 2f;
         }
-
+        // Bu metod, ekran koordinatlarını dünya koordinatlarına dönüştürür.
         private Vector3 CameraScreenPositionToWorldPosition(Vector2 position)
         {
             float h = _camera.orthographicSize * 2f;
@@ -363,7 +374,7 @@ namespace DevelopersHub.RealtimeNetworking
             Vector3 ancher = _camera.transform.position - (_camera.transform.right.normalized * w / 2f) - (_camera.transform.up.normalized * h / 2f);
             return ancher + (_camera.transform.right.normalized * position.x / Screen.width * w) + (_camera.transform.up.normalized * position.y / Screen.height * h);
         }
-
+        // Bu metod, ekran koordinatlarını düzlem koordinatlarına dönüştürür.
         public Vector3 CameraScreenPositionToPlanePosition(Vector2 position)
         {
             Vector3 point = CameraScreenPositionToWorldPosition(position);

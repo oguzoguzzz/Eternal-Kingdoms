@@ -4,6 +4,7 @@ using System.Data;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Drawing;
+using static DevelopersHub.RealtimeNetworking.Server.Data;
 
 
 namespace DevelopersHub.RealtimeNetworking.Server
@@ -92,6 +93,11 @@ namespace DevelopersHub.RealtimeNetworking.Server
                     {
                         command.ExecuteNonQuery();
                         account_id = command.LastInsertedId;
+                    }
+                    query = String.Format("INSERT INTO buildings (global_id, account_id, x_position, y_position, columns_count, rows_count) VALUES('{0}', {1},{2},{3},{4},{5});", "cityhall", account_id, 25, 25, 3, 3);
+                    using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
+                    {
+                        command.ExecuteNonQuery();
                     }
                 }
                 return account_id;
