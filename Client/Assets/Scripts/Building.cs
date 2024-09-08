@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using DevelopersHub.RealtimeNetworking.Client;
 
 namespace DevelopersHub.RealtimeNetworking
 {
@@ -8,7 +9,8 @@ namespace DevelopersHub.RealtimeNetworking
     {
         public string id = "";
 
-        private static Building _instance = null; public static Building instance { get { return _instance; } set { _instance = value; } }
+        private static Building _buildInstance = null; public static Building buildInstance { get { return _buildInstance; } set { _buildInstance = value; } }
+        private static Building _selectedInstance = null; public static Building selectedInstance { get { return _selectedInstance; } set { _selectedInstance = value; } }
         [System.Serializable] public class Level
         {
             public int level = 1;
@@ -30,6 +32,8 @@ namespace DevelopersHub.RealtimeNetworking
         private int _currentY = 0; public int currentY { get { return _currentY; } }
         private int _X = 0;
         private int _Y = 0;
+        public int _originalX = 0;
+        public int _originalY = 0;
 
         public void PlacedOnGrid(int x, int y)
         {
@@ -48,7 +52,7 @@ namespace DevelopersHub.RealtimeNetworking
         }
         public void RemovedFromGrid()
         {
-            _instance = null;
+            _buildInstance = null;
             UI_Build.instance.SetStatus(false);
             CameraController.instance.isPlacingBuilding = false;
             Destroy(gameObject);
@@ -72,12 +76,56 @@ namespace DevelopersHub.RealtimeNetworking
         {
             if(UI_Main.instance._grid.CanPlaceBuilding(this, currentX, currentY))
             {
+                UI_Build.instance.clickConfirmButton.interactable = true;
                 _baseArea.sharedMaterial.color = Color.green;
             }
             else
             {
+                UI_Build.instance.clickConfirmButton.interactable = false;
                 _baseArea.sharedMaterial.color = Color.red;
             }
+        }
+        public void Selected()
+        {
+            if (selectedInstance != null)
+            {
+                if (selectedInstance == this)
+                {
+                    return;
+                }
+                else
+                {
+                    selectedInstance.Deselected();
+                }
+            }
+            UI_BuildingOptions.instance.SetStatus(true);
+
+            _originalX = currentX;
+            _originalY = currentY;
+            selectedInstance = this;
+        }
+        public void Deselected()
+        {
+            UI_BuildingOptions.instance.SetStatus(false);
+            CameraController.instance.isReplacingBuilding = false;
+            if (_originalX != currentX || _originalY !=  currentY)
+            {
+                if (UI_Main.instance._grid.CanPlaceBuilding(this, _currentX, _currentY))
+                {
+                    Packet packet = new Packet();
+                    packet.Write((int)Player.RequestID.REPLACE);
+                    packet.Write(selectedInstance.databaseID);
+                    packet.Write(selectedInstance.currentX);
+                    packet.Write(selectedInstance.currentY);
+                    Sender.TCP_Send(packet);
+                }
+                else
+                {
+                    PlacedOnGrid(_originalX, _originalY);
+                    _baseArea.gameObject.SetActive(false);
+                }
+            }
+            selectedInstance = null;
         }
     }
 }

@@ -111,7 +111,6 @@ namespace DevelopersHub.RealtimeNetworking.Server
             packet.Write(playerData);
             Sender.TCP_Send(id , packet);
         }
-
         private async static Task<Data.Player> GetPlayerDataAsync(int id, string device)
         {
             Task<Data.Player> task = Task.Run(() =>
@@ -140,11 +139,10 @@ namespace DevelopersHub.RealtimeNetworking.Server
             });
             return await task;
         }
-
         public async static void PlaceBuilding(int id, string device, string buildingID, int x, int y)
         {
             Packet packet = new Packet();
-            packet.Write(3);
+            packet.Write((int)Terminal.RequestID.BUILD);
             Data.Player player = await GetPlayerDataAsync(id, device);
             Data.ServerBuilding building = await GetServerBuildingAsync(buildingID, 1);
             if (player.gold >= building.requiredGold && player.food >= building.requiredFood && player.wood >= building.requiredWood) 
@@ -152,7 +150,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
                 long account_id = Server.clients[id].account;
                 List<Data.Building> buildings = await GetBuildingsAsync(account_id);
                 bool canPlaceBuilding = true;
-                if (x < 0 || y < 0 || x + building.columns > 45 || y + building.rows > 45)
+                if (x < 0 || y < 0 || x + building.columns >= 45 || y + building.rows >= 45)
                 {
                     canPlaceBuilding = false;
                 }
@@ -201,6 +199,77 @@ namespace DevelopersHub.RealtimeNetworking.Server
                     command.ExecuteNonQuery();
                 }
                 return id;
+            });
+            return await task;
+        }
+        public async static void ReplaceBuilding(int id, long databaseID, int x, int y)
+        {
+            Packet packet = new Packet();
+            packet.Write((int)Terminal.RequestID.REPLACE);
+            long account_id = Server.clients[id].account;
+            List<Data.Building> buildings = await GetBuildingsAsync(account_id);
+            Data.Building building = null;
+
+            if (buildings != null && buildings.Count > 0)
+            {
+                for (int i = 0; i < buildings.Count; i++)
+                {
+                    if (buildings[i].databaseID == databaseID)
+                    {
+                        building = buildings[i];
+                        break;
+                    }
+                }
+            }
+            if (building !=  null) 
+            {
+                bool canPlaceBuilding = true;
+                if (x < 0 || y < 0 || x + building.columns >= 45 || y + building.rows >= 45)
+                {
+                    canPlaceBuilding = false;
+                }
+                else
+                {
+                    for (int i = 0; i < buildings.Count; i++)
+                    {
+                        Rectangle rect1 = new Rectangle(buildings[i].x, buildings[i].y, buildings[i].columns, buildings[i].rows);
+                        Rectangle rect2 = new Rectangle(x, y, building.columns, building.rows);
+                        if (rect2.IntersectsWith(rect1))
+                        {
+                            canPlaceBuilding = false;
+                            break;
+                        }
+                    }
+                }
+                if (canPlaceBuilding)
+                {
+                    await ReplaceBuildingAsync(databaseID, x, y);
+                    packet.Write(1);
+                }
+                else
+                {
+                    packet.Write(2);
+                }
+            }
+            else
+            {
+                packet.Write(0);
+            }
+            packet.Write(x);
+            packet.Write(y);
+            packet.Write(databaseID);
+            Sender.TCP_Send(id, packet);
+        }
+        private async static Task<bool> ReplaceBuildingAsync(long building_id, int x, int y)
+        {
+            Task<bool> task = Task.Run(() =>
+            {
+                string query = String.Format("UPDATE buildings SET x_position = {0}, y_position = {1} WHERE id = {2};",x, y, building_id);
+                using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
+                {
+                    command.ExecuteNonQuery();
+                }
+                return true;
             });
             return await task;
         }

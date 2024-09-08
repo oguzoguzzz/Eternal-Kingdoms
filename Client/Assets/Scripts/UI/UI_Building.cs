@@ -32,7 +32,7 @@ namespace DevelopersHub.RealtimeNetworking
                 building.PlacedOnGrid(20, 20);
                 building._baseArea.gameObject.SetActive(true);
 
-                Building.instance = building;
+                Building.buildInstance = building;
                 CameraController.instance.isPlacingBuilding = true;
 
                 UI_Build.instance.SetStatus(true);

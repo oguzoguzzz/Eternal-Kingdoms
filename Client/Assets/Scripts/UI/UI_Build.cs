@@ -12,12 +12,14 @@ public class UI_Build : MonoBehaviour
         [SerializeField] public GameObject _elements = null;
         public RectTransform buttonConfirm = null;
         public RectTransform buttonCancel = null;
+        [HideInInspector] public Button clickConfirmButton = null; 
         private static UI_Build _instance = null; public static UI_Build instance { get { return _instance;}}
 
         private void Awake()
         {
             _instance = this;
             _elements.SetActive(false);
+            clickConfirmButton = buttonConfirm.gameObject.GetComponent<Button>();
         }
         private void Start()
         {
@@ -30,9 +32,9 @@ public class UI_Build : MonoBehaviour
         }
         private void Update()
         {
-            if(Building.instance != null && CameraController.instance.isPlacingBuilding)
+            if(Building.buildInstance != null && CameraController.instance.isPlacingBuilding)
             {
-                Vector3 end = UI_Main.instance._grid.GetEndPosition(Building.instance);
+                Vector3 end = UI_Main.instance._grid.GetEndPosition(Building.buildInstance);
 
                 Vector3 planDownLeft = CameraController.instance.CameraScreenPositionToPlanePosition(Vector2.zero);
                 Vector3 planTopRight = CameraController.instance.CameraScreenPositionToPlanePosition(new Vector2(Screen.width, Screen.height));
@@ -60,24 +62,24 @@ public class UI_Build : MonoBehaviour
         }
         private void Confirm()
         {
-            if (Building.instance != null && UI_Main.instance._grid.CanPlaceBuilding(Building.instance, Building.instance.currentX, Building.instance.currentY))
+            if (Building.buildInstance != null && UI_Main.instance._grid.CanPlaceBuilding(Building.buildInstance, Building.buildInstance.currentX, Building.buildInstance.currentY))
             {
                 Packet packet = new Packet();
                 packet.Write((int)Player.RequestID.BUILD);
                 packet.Write(SystemInfo.deviceUniqueIdentifier);
-                packet.Write(Building.instance.id);
-                packet.Write(Building.instance.currentX);
-                packet.Write(Building.instance.currentY);
+                packet.Write(Building.buildInstance.id);
+                packet.Write(Building.buildInstance.currentX);
+                packet.Write(Building.buildInstance.currentY);
                 Sender.TCP_Send(packet);
                 Cancel();
             }
         }
         public void Cancel()
         {
-            if(Building.instance != null)
+            if(Building.buildInstance != null)
             {
                 CameraController.instance.isPlacingBuilding = false;
-                Building.instance.RemovedFromGrid();
+                Building.buildInstance.RemovedFromGrid();
             }
         }
     }

@@ -100,6 +100,15 @@ namespace DevelopersHub.RealtimeNetworking
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""PointerClick"",
+                    ""type"": ""Button"",
+                    ""id"": ""db0afb75-0069-4403-ab66-228c3006b5be"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": ""Tap"",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -245,6 +254,28 @@ namespace DevelopersHub.RealtimeNetworking
                     ""action"": ""PointerPosition"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""86f379f2-ca19-4eed-ba31-956c50ed8a4d"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c5f8e799-978b-4d76-b215-0aef3fc8c67f"",
+                    ""path"": ""<Touchscreen>/primaryTouch/tap"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""PointerClick"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -261,6 +292,7 @@ namespace DevelopersHub.RealtimeNetworking
             m_Main_TouchPosition0 = m_Main.FindAction("TouchPosition0", throwIfNotFound: true);
             m_Main_TouchPosition1 = m_Main.FindAction("TouchPosition1", throwIfNotFound: true);
             m_Main_PointerPosition = m_Main.FindAction("PointerPosition", throwIfNotFound: true);
+            m_Main_PointerClick = m_Main.FindAction("PointerClick", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -330,6 +362,7 @@ namespace DevelopersHub.RealtimeNetworking
         private readonly InputAction m_Main_TouchPosition0;
         private readonly InputAction m_Main_TouchPosition1;
         private readonly InputAction m_Main_PointerPosition;
+        private readonly InputAction m_Main_PointerClick;
         public struct MainActions
         {
             private @Controls m_Wrapper;
@@ -342,6 +375,7 @@ namespace DevelopersHub.RealtimeNetworking
             public InputAction @TouchPosition0 => m_Wrapper.m_Main_TouchPosition0;
             public InputAction @TouchPosition1 => m_Wrapper.m_Main_TouchPosition1;
             public InputAction @PointerPosition => m_Wrapper.m_Main_PointerPosition;
+            public InputAction @PointerClick => m_Wrapper.m_Main_PointerClick;
             public InputActionMap Get() { return m_Wrapper.m_Main; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -375,6 +409,9 @@ namespace DevelopersHub.RealtimeNetworking
                 @PointerPosition.started += instance.OnPointerPosition;
                 @PointerPosition.performed += instance.OnPointerPosition;
                 @PointerPosition.canceled += instance.OnPointerPosition;
+                @PointerClick.started += instance.OnPointerClick;
+                @PointerClick.performed += instance.OnPointerClick;
+                @PointerClick.canceled += instance.OnPointerClick;
             }
 
             private void UnregisterCallbacks(IMainActions instance)
@@ -403,6 +440,9 @@ namespace DevelopersHub.RealtimeNetworking
                 @PointerPosition.started -= instance.OnPointerPosition;
                 @PointerPosition.performed -= instance.OnPointerPosition;
                 @PointerPosition.canceled -= instance.OnPointerPosition;
+                @PointerClick.started -= instance.OnPointerClick;
+                @PointerClick.performed -= instance.OnPointerClick;
+                @PointerClick.canceled -= instance.OnPointerClick;
             }
 
             public void RemoveCallbacks(IMainActions instance)
@@ -430,6 +470,7 @@ namespace DevelopersHub.RealtimeNetworking
             void OnTouchPosition0(InputAction.CallbackContext context);
             void OnTouchPosition1(InputAction.CallbackContext context);
             void OnPointerPosition(InputAction.CallbackContext context);
+            void OnPointerClick(InputAction.CallbackContext context);
         }
     }
 }

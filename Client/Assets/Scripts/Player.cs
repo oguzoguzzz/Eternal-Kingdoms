@@ -9,7 +9,7 @@ namespace DevelopersHub.RealtimeNetworking
     {
         public enum RequestID
         {
-            AUTH = 1, SYNC = 2, BUILD = 3
+            AUTH = 1, SYNC = 2, BUILD = 3, REPLACE = 4
         }
         private void Start()
         {
@@ -51,6 +51,33 @@ namespace DevelopersHub.RealtimeNetworking
                             break;
                     }
                     break;
+
+                    case RequestID.REPLACE:
+                    int replaceResponse = packet.ReadInt();
+                    switch (replaceResponse)
+                    {
+                        case 0:
+                            Debug.Log("No building");
+                            break;
+                        case 1:
+                            Debug.Log("Replace Successfully");
+                            int replaceX = packet.ReadInt();
+                            int replaceY = packet.ReadInt();
+                            long replaceID = packet.ReadLong();
+                            for (int i = 0; i < UI_Main.instance._grid.buildings.Count; i++)
+                            {
+                                if (UI_Main.instance._grid.buildings[i].databaseID == replaceID)
+                                {
+                                    UI_Main.instance._grid.buildings[i].PlacedOnGrid(replaceX, replaceY);
+                                    UI_Main.instance._grid.buildings[i]._baseArea.gameObject.SetActive(false);
+                                }
+                            }
+                            break;
+                        case 2:
+                            Debug.Log("Replace taken");
+                            break;
+                    }
+                    break;
             }
         }
         public void SendSyncRequest()
@@ -82,7 +109,7 @@ namespace DevelopersHub.RealtimeNetworking
                         if(prefab)
                         {
                             Building b = Instantiate(prefab, Vector3.zero, Quaternion.identity);
-
+                            b.databaseID = player.buildings[i].databaseID;
                             b.PlacedOnGrid(player.buildings[i].x, player.buildings[i].y);
                             b._baseArea.gameObject.SetActive(false);
 

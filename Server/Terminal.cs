@@ -31,7 +31,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
         #region Data
         public enum RequestID
         {
-            AUTH = 1, SYNC = 2, BUILD = 3
+            AUTH = 1, SYNC = 2, BUILD = 3, REPLACE = 4
         }
         public static void ReceivedPacket(int clientID, Packet packet)
         {
@@ -53,6 +53,12 @@ namespace DevelopersHub.RealtimeNetworking.Server
                     int x = packet.ReadInt();
                     int y = packet.ReadInt();
                     Database.PlaceBuilding(clientID, device, building, x, y);
+                    break;
+                case RequestID.REPLACE:
+                    long databaseID = packet.ReadLong();
+                    int replaceX = packet.ReadInt();
+                    int replaceY = packet.ReadInt();
+                    Database.ReplaceBuilding(clientID,databaseID,replaceX, replaceY);
                     break;
             }
         }
