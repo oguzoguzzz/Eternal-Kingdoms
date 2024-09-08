@@ -213,10 +213,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   id: goldmine
+  _databaseID: 0
   _rows: 3
   _columns: 3
   _baseArea: {fileID: 7215235816035699814}
   _levels:
   - level: 1
-    icon: {fileID: 0}
+    icon: {fileID: 21300000, guid: 7a3735be15163aa4faaecfcacb349d98, type: 3}
     mesh: {fileID: 771938792443901648}
+  _originalX: 0
+  _originalY: 0

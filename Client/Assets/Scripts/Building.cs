@@ -41,6 +41,8 @@ namespace DevelopersHub.RealtimeNetworking
             _currentY = y;
             _X = x;
             _Y = y;
+            _originalX = x;
+            _originalY = y;
             Vector3 position = UI_Main.instance._grid.GetCenterPosition(x, y, _rows, _columns);
             transform.position = position;
             SetBaseColor();
@@ -70,6 +72,10 @@ namespace DevelopersHub.RealtimeNetworking
             Vector3 position = UI_Main.instance._grid.GetCenterPosition(_currentX, _currentY, _rows, _columns);
             transform.position = position;
 
+            if(_X != _currentX || _Y != _currentY)
+            {
+                _baseArea.gameObject.SetActive(true);
+            }
             SetBaseColor();
         }
         private void SetBaseColor()
@@ -85,6 +91,7 @@ namespace DevelopersHub.RealtimeNetworking
                 _baseArea.sharedMaterial.color = Color.red;
             }
         }
+        [HideInInspector]public bool waitingReplaceResponse = false;
         public void Selected()
         {
             if (selectedInstance != null)
@@ -98,6 +105,11 @@ namespace DevelopersHub.RealtimeNetworking
                     selectedInstance.Deselected();
                 }
             }
+            if (waitingReplaceResponse)
+            {
+                return;
+            }
+
             UI_BuildingOptions.instance.SetStatus(true);
 
             _originalX = currentX;
@@ -110,22 +122,34 @@ namespace DevelopersHub.RealtimeNetworking
             CameraController.instance.isReplacingBuilding = false;
             if (_originalX != currentX || _originalY !=  currentY)
             {
-                if (UI_Main.instance._grid.CanPlaceBuilding(this, _currentX, _currentY))
+                SaveLocation();
+            }
+            selectedInstance = null;
+        }
+        public void SaveLocation(bool resetIfNot = true)
+        {
+            if (UI_Main.instance._grid.CanPlaceBuilding(this, _currentX, _currentY) && (_X != currentX || _Y !=  currentY) && !waitingReplaceResponse)
                 {
+                    waitingReplaceResponse = true;
                     Packet packet = new Packet();
                     packet.Write((int)Player.RequestID.REPLACE);
                     packet.Write(selectedInstance.databaseID);
                     packet.Write(selectedInstance.currentX);
                     packet.Write(selectedInstance.currentY);
                     Sender.TCP_Send(packet);
+                    _baseArea.gameObject.SetActive(false);
                 }
                 else
                 {
-                    PlacedOnGrid(_originalX, _originalY);
-                    _baseArea.gameObject.SetActive(false);
+                    if (resetIfNot)
+                    {
+                        if (waitingReplaceResponse == false)
+                        {
+                            PlacedOnGrid(_originalX, _originalY);
+                        }
+                        _baseArea.gameObject.SetActive(false);
+                    }
                 }
-            }
-            selectedInstance = null;
         }
     }
 }

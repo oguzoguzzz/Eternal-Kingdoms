@@ -232,12 +232,15 @@ namespace DevelopersHub.RealtimeNetworking.Server
                 {
                     for (int i = 0; i < buildings.Count; i++)
                     {
-                        Rectangle rect1 = new Rectangle(buildings[i].x, buildings[i].y, buildings[i].columns, buildings[i].rows);
-                        Rectangle rect2 = new Rectangle(x, y, building.columns, building.rows);
-                        if (rect2.IntersectsWith(rect1))
+                        if (buildings[i].databaseID != building.databaseID)
                         {
-                            canPlaceBuilding = false;
-                            break;
+                            Rectangle rect1 = new Rectangle(buildings[i].x, buildings[i].y, buildings[i].columns, buildings[i].rows);
+                            Rectangle rect2 = new Rectangle(x, y, building.columns, building.rows);
+                            if (rect2.IntersectsWith(rect1))
+                            {
+                                canPlaceBuilding = false;
+                                break;
+                            }
                         }
                     }
                 }

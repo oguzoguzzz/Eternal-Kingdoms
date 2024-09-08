@@ -54,28 +54,34 @@ namespace DevelopersHub.RealtimeNetworking
 
                     case RequestID.REPLACE:
                     int replaceResponse = packet.ReadInt();
-                    switch (replaceResponse)
+                    int replaceX = packet.ReadInt();
+                    int replaceY = packet.ReadInt();
+                    long replaceID = packet.ReadLong();
+
+                    for (int i = 0; i < UI_Main.instance._grid.buildings.Count; i++)
                     {
-                        case 0:
-                            Debug.Log("No building");
-                            break;
-                        case 1:
-                            Debug.Log("Replace Successfully");
-                            int replaceX = packet.ReadInt();
-                            int replaceY = packet.ReadInt();
-                            long replaceID = packet.ReadLong();
-                            for (int i = 0; i < UI_Main.instance._grid.buildings.Count; i++)
+                        if (UI_Main.instance._grid.buildings[i].databaseID == replaceID)
+                        {
+                            switch (replaceResponse)
                             {
-                                if (UI_Main.instance._grid.buildings[i].databaseID == replaceID)
-                                {
+                                case 0:
+                                    Debug.Log("No building");
+                                    break;
+                                case 1:
+                                    Debug.Log("Replace Successfully");
                                     UI_Main.instance._grid.buildings[i].PlacedOnGrid(replaceX, replaceY);
-                                    UI_Main.instance._grid.buildings[i]._baseArea.gameObject.SetActive(false);
-                                }
+                                    if (UI_Main.instance._grid.buildings[i] != Building.selectedInstance)
+                                    {
+                                        
+                                    }
+                                    break;
+                                case 2:
+                                    Debug.Log("Replace taken");
+                                    break;
                             }
+                            UI_Main.instance._grid.buildings[i].waitingReplaceResponse = false;
                             break;
-                        case 2:
-                            Debug.Log("Replace taken");
-                            break;
+                        }
                     }
                     break;
             }
