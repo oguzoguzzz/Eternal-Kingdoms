@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using System.Xml.Serialization;
 using System.IO;
+using System;
 
 namespace DevelopersHub.RealtimeNetworking
 {
@@ -20,7 +21,7 @@ namespace DevelopersHub.RealtimeNetworking
             public List<Building> buildings = new List<Building>(); // buildings: Oyuncunun sahip olduğu binaların listesi
         }
         // Building: Bina verileri için
-        public class Building
+        public class Building // Bina verilerini tutar.
         {
             public string id = "";
             public int level = 0;
@@ -29,6 +30,15 @@ namespace DevelopersHub.RealtimeNetworking
             public int y = 0;
             public int columns = 0;
             public int rows = 0;
+            public int storage = 0;
+            public DateTime boost;
+            public float gold_protection = 0;
+            public float food_protection = 0;
+            public float wood_protection = 0;
+            public float stone_protection = 0;
+            public int capacity = 0;
+            public float speed = 0;
+            public float radius = 0;
         }
         // ServerBuilding: Sunucu tarafında kullanılan bina verileri için
         public class ServerBuilding

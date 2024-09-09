@@ -9,18 +9,17 @@ using static DevelopersHub.RealtimeNetworking.Server.Data;
 
 namespace DevelopersHub.RealtimeNetworking.Server
 {
-    class Database
+    class Database // veritabanı işlemlerini yönetir.
     {
 
         #region MySQL
         
-        private static MySqlConnection _mysqlConnection;
-        private const string _mysqlServer = "127.0.0.1";
+        private static MySqlConnection _mysqlConnection; // MySQL bağlantısını tutar.
+        private const string _mysqlServer = "127.0.0.1"; // MySQL sunucu bilgilerini tutar.
         private const string _mysqlUsername = "root";
         private const string _mysqlPassword = "";
         private const string _mysqlDatabase = "eternal_kingdoms";
-
-        public static MySqlConnection mysqlConnection
+        public static MySqlConnection mysqlConnection // MySQL bağlantısını döndürür. Bağlantı yoksa, yeni bir bağlantı oluşturur.
         {
             get
             {
@@ -54,7 +53,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
                 return _mysqlConnection;
             }
         }
-        public async static void AuthenticatePlayer (int id, string device)
+        public async static void AuthenticatePlayer (int id, string device) // Oyuncunun kimliğini doğrular ve hesabını oluşturur.
         {
             long account_id = await AuthenticatePlayerAsync(id, device);
             Server.clients[id].device = device;
@@ -64,7 +63,6 @@ namespace DevelopersHub.RealtimeNetworking.Server
             packet.Write(account_id);
             Sender.TCP_Send(id, packet);
         }
-
         private async static Task<long> AuthenticatePlayerAsync(int id, string device)
         {
             Task<long> task = Task.Run(() =>
@@ -99,13 +97,17 @@ namespace DevelopersHub.RealtimeNetworking.Server
                     {
                         command.ExecuteNonQuery();
                     }
+                    query = String.Format("INSERT INTO buildings (global_id, account_id, x_position, y_position, columns_count, rows_count) VALUES('{0}', {1},{2},{3},{4},{5});", "storehouse", account_id, 30, 30, 3, 3);
+                    using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
+                    {
+                        command.ExecuteNonQuery();
+                    }
                 }
                 return account_id;
             });
             return await task;
         }
-
-        public async static void SyncPlayerData(int id, string device)
+        public async static void SyncPlayerData(int id, string device) // Oyuncunun verilerini senkronize eder.
         {
             long account_id = Server.clients[id].account;
             Data.Player player = await GetPlayerDataAsync(id, device);
@@ -146,6 +148,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             return await task;
         }
         public async static void PlaceBuilding(int id, string device, string buildingID, int x, int y)
+        // Oyuncunun bir binayı yerleştirir.
         {
             Packet packet = new Packet();
             packet.Write((int)Terminal.RequestID.BUILD);
@@ -199,7 +202,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
                 {
                     command.ExecuteNonQuery();
                 }
-                query = String.Format("INSERT INTO buildings (global_id, account_id, x_position, y_position, columns_count, rows_count) VALUES('{0}', {1},{2},{3},{4},{5});", building.id, account_id, x, y, building.columns, building.rows);
+                query = String.Format("INSERT INTO buildings (global_id, account_id, x_position, y_position) VALUES('{0}', {1},{2},{3});", building.id, account_id, x, y);
                 using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
                 {
                     command.ExecuteNonQuery();
@@ -209,6 +212,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             return await task;
         }
         public async static void ReplaceBuilding(int id, long databaseID, int x, int y)
+        // Oyuncunun bir binayı değiştirir.
         {
             Packet packet = new Packet();
             packet.Write((int)Terminal.RequestID.REPLACE);
@@ -282,7 +286,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             });
             return await task;
         }
-        private async static Task<Data.Building> GetBuildingAsync(long account, string id)
+        private async static Task<Data.Building> GetBuildingAsync(long account, string id) // Bir binanın verilerini alır.
         {
             Task<Data.Building> task = Task.Run(() =>
             {
@@ -311,7 +315,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             });
             return await task;
         }
-        private async static Task<Data.ServerBuilding> GetServerBuildingAsync(string id, int level)
+        private async static Task<Data.ServerBuilding> GetServerBuildingAsync(string id, int level) // Bir sunucu binasının verilerini alır.
         {
             Task<Data.ServerBuilding> task = Task.Run(() =>
             {
@@ -346,7 +350,7 @@ namespace DevelopersHub.RealtimeNetworking.Server
             Task<List<Data.Building>> task = Task.Run(() =>
             {
                 List<Data.Building> data = new List<Data.Building>();
-                string query = String.Format("SELECT id, global_id, level, x_position, y_position, columns_count, rows_count FROM buildings WHERE account_id = '{0}';", account);
+                string query = String.Format("SELECT id, global_id, level, x_position, y_position FROM buildings WHERE account_id = '{0}';", account);
                 using (MySqlCommand command = new MySqlCommand(query, mysqlConnection))
                 {
                     using (MySqlDataReader reader = command.ExecuteReader())
@@ -361,8 +365,6 @@ namespace DevelopersHub.RealtimeNetworking.Server
                                 building.level = int.Parse(reader["level"].ToString());
                                 building.x = int.Parse(reader["x_position"].ToString());
                                 building.y = int.Parse(reader["y_position"].ToString());
-                                building.columns = int.Parse(reader["columns_count"].ToString());
-                                building.rows = int.Parse(reader["rows_count"].ToString());
                                 data.Add(building);
                             }
                         }

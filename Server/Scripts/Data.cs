@@ -28,6 +28,15 @@ namespace DevelopersHub.RealtimeNetworking.Server
             public int y = 0;
             public int columns = 0;
             public int rows = 0;
+            public int storage = 0;
+            public DateTime boost;
+            public float gold_protection = 0;
+            public float food_protection = 0;
+            public float wood_protection = 0;
+            public float stone_protection = 0;
+            public int capacity = 0;
+            public float speed = 0;
+            public float radius = 0;
         }
         public class ServerBuilding // Sunucu tarafındaki bina verilerini tutar
         {
